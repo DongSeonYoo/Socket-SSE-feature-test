@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, CreateUserResponseDto } from './dto/create-user.dto';
@@ -10,7 +17,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   /**
-   * Create a new user
+   * 회원가입
    */
   @HttpCode(HttpStatus.OK)
   @Post()
@@ -18,4 +25,17 @@ export class UsersController {
   createUser(@Body() createUser: CreateUserDto) {
     return 'return in createUserController';
   }
+
+  /**
+   * 로그인
+   */
+  @HttpCode(HttpStatus.OK)
+  @Post('login')
+  login() {}
+
+  /**
+   * 회원 정보 조회
+   */
+  @Get('info')
+  getUserInfo() {}
 }
