@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Comment {
+  idx       Int       @id @default(autoincrement())
+  postIdx   Int       @map("post_idx")
+  authorIdx Int       @map("author_idx")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  Post      Post      @relation(fields: [postIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_post_to_comment")
+  User      User      @relation(fields: [authorIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_to_comment")
+
+  @@map("comment")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Notification {
+  idx              Int              @id @default(autoincrement())
+  issuerIdx        Int              @map("issuer_idx")
+  subscriberIdx    Int              @map("subscriber_idx")
+  entityTypeIdx    Int              @map("entity_type_idx")
+  entityIdx        Int              @map("entity_idx")
+  readAt           DateTime?        @map("read_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?        @map("deleted_at") @db.Timestamptz(6)
+  NotificationType NotificationType @relation(fields: [entityTypeIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_notification_type_to_notification")
+  IssuedUser       User             @relation("notification_issuer_idxTouser", fields: [issuerIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_to_notification")
+  SubscribedUser   User             @relation("notification_subscriber_idxTouser", fields: [subscriberIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_to_notification1")
+
+  @@map("notification")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model NotificationType {
+  idx          Int              @id @default(autoincrement())
+  name         NotificationName
+  Notification Notification[]
+
+  @@map("notification_type")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Post {
+  idx       Int         @id @default(autoincrement())
+  authorIdx Int         @map("author_idx")
+  title     String      @db.VarChar
+  content   String
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime?   @map("deleted_at") @db.Timestamptz(6)
+  Comment   Comment[]
+  User      User        @relation(fields: [authorIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_to_post")
+  PostImage PostImage[]
+
+  @@map("post")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model PostImage {
+  idx     Int    @id @default(autoincrement())
+  postIdx Int    @default(autoincrement()) @map("post_idx")
+  path    String
+  Post    Post   @relation(fields: [postIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_post_to_post_image")
+
+  @@map("post_image")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  idx                                         Int            @id @default(autoincrement())
+  email                                       String         @db.VarChar
+  password                                    String         @db.Char(60)
+  name                                        String         @db.VarChar
+  createdAt                                   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                                   DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt                                   DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  comment                                     Comment[]
+  notificationNotificationIssuerIdxTouser     Notification[] @relation("notification_issuer_idxTouser")
+  notificationNotificationSubscriberIdxTouser Notification[] @relation("notification_subscriber_idxTouser")
+  post                                        Post[]
+
+  @@unique([email, deletedAt], map: "unique_email_deleted_at")
+  @@map("user")
+}
+
+enum NotificationName {
+  POST
+  COMMENT
+}
