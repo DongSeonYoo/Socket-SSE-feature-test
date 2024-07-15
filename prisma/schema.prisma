@@ -15,6 +15,7 @@ model Comment {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  content   String
   Post      Post      @relation(fields: [postIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_post_to_comment")
   User      User      @relation(fields: [authorIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_to_comment")
 
