@@ -17,6 +17,9 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { SuccessResponseInterceptor } from './interceptors/response.interceptor';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { UsersModule } from './apis/users/users.module';
+import { PostsModule } from './apis/posts/posts.module';
+import { NotificationsModule } from './apis/notifications/notifications.module';
+import { CommentsModule } from './apis/comments/comments.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { UsersModule } from './apis/users/users.module';
     }),
     PrismaModule,
     UsersModule,
+    PostsModule,
+    NotificationsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
