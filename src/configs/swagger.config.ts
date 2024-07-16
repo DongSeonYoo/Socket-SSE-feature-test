@@ -6,6 +6,15 @@ export const setSwagger = (app: INestApplication) => {
     .setTitle('Socket-SSE-Feature-Test')
     .setDescription('')
     .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        name: 'JWT',
+        in: 'header',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
