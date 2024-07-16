@@ -20,11 +20,19 @@ import { UsersModule } from './apis/users/users.module';
 import { PostsModule } from './apis/posts/posts.module';
 import { NotificationsModule } from './apis/notifications/notifications.module';
 import { CommentsModule } from './apis/comments/comments.module';
+import { AuthModule } from './apis/auth/auth.module';
+import Joi from 'joi';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validationSchema: Joi.object({
+        MODE: Joi.string().valid('dev', 'prod', 'test').required(),
+        PORT: Joi.number().port().default(3000),
+        JWT_SECRET_KEY: Joi.string().required(),
+        JWT_EXPIRED_TIME: Joi.string().required(),
+      }),
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client', 'html'),
@@ -39,6 +47,7 @@ import { CommentsModule } from './apis/comments/comments.module';
     PostsModule,
     NotificationsModule,
     CommentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
