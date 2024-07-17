@@ -4,7 +4,7 @@ import { IUser } from '../entities/user.entity';
 export class LoginRequestDto {
   /**
    * 유저 이메일
-   * @example email@domain.com
+   * @example inko51366@naver.com
    */
   @IsNotEmpty()
   @IsString()
@@ -12,7 +12,7 @@ export class LoginRequestDto {
 
   /**
    * 유저 비밀번호
-   * @example 'password1A..'
+   * @example 1234Asd..
    */
   @IsNotEmpty()
   @IsString()

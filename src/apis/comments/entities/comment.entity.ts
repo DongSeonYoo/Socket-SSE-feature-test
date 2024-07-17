@@ -8,3 +8,8 @@ export interface IComment extends BaseTableOption {
   authorIdx: IUser['idx'];
   content: string;
 }
+
+export namespace IComment {
+  export interface ICreateCommentInput
+    extends Pick<IComment, 'content' | 'postIdx'> {}
+}
