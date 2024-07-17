@@ -1,12 +1,12 @@
 import { IUser } from 'src/apis/users/entities/user.entity';
-import { INotificationType } from './notification-type.entity';
 import { BaseTableOption } from 'src/utils/base-table.util';
+import { NotificationName } from '@prisma/client';
 
-export interface Notification extends BaseTableOption {
+export interface INotification extends BaseTableOption {
   idx: number;
-  issuerIdx: IUser['idx'];
-  subscriberIdx: IUser['idx'];
-  entityTypeIdx: INotificationType['idx'];
+  senderIdx: IUser['idx'];
+  receiverIdx: IUser['idx'];
+  entityType: NotificationName;
   entityIdx: number;
-  readAt: Date;
+  readedAt: Date | null;
 }
