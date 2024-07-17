@@ -9,8 +9,8 @@ import { IExceptionResponse } from 'src/interfaces/response.interface';
 
 @Catch(Error)
 export class UnhandledExceptionFilter implements ExceptionFilter {
-
   constructor(private readonly logger: Logger) {}
+
   catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const req = ctx.getRequest();

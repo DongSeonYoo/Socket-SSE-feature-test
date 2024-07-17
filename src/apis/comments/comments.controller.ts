@@ -34,12 +34,18 @@ export class CommentsController {
   /**
    * 댓글 수정
    */
+  @ApiOperation({
+    description: '댓글 작성 시 게시글의 작성자에게 알림을 보냅니다.',
+  })
   @Put('update')
   updateComment() {}
 
   /**
    * 댓글 삭제
    */
+  @ApiOperation({
+    deprecated: true,
+  })
   @Delete('delete')
   deleteComment() {}
 }
