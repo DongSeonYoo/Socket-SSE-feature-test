@@ -8,5 +8,26 @@ export interface INotification extends BaseTableOption {
   receiverIdx: IUser['idx'];
   entityType: NotificationName;
   entityIdx: number;
-  readedAt: Date | null;
+  readedAt?: Date | null;
+}
+
+export namespace INotification {
+  export interface ICreateNotificationInput {
+    senderIdx: IUser['idx'];
+    receiverIdx: IUser['idx'];
+    entityType: NotificationName;
+    entityIdx: number;
+  }
+
+  export interface IGetNotificationListOutPut
+    extends Pick<
+      INotification,
+      | 'idx'
+      | 'entityIdx'
+      | 'entityType'
+      | 'readedAt'
+      | 'senderIdx'
+      | 'updatedAt'
+      | 'createdAt'
+    > {}
 }
