@@ -41,7 +41,6 @@ export class UsersService {
       dto.password,
       checkUser.password,
     );
-
     if (!comparePassword) {
       this.logger.debug('비밀번호가 일치하지 않습니다.');
       throw new BadRequestException('아이디 또는 비밀번호가 일치하지 않습니다');

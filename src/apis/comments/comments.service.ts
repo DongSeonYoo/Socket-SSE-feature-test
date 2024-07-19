@@ -6,12 +6,19 @@ import {
 } from './dto/create-comment.dto';
 import { IUser } from '../users/entities/user.entity';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { IComment } from './entities/comment.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CommentCreateEvent } from '../notifications/events/comment.event';
+import { NotificationName } from '@prisma/client';
 
 @Injectable()
 export class CommentsService {
   private readonly logger: Logger = new Logger(CommentsService.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   /**
    * 댓글 생성 프로세스
@@ -33,17 +40,43 @@ export class CommentsService {
       throw new NotFoundException('해당하는 게시글이 존재하지 않습니다.');
     }
 
-    return this.prismaService.comment
-      .create({
-        data: {
-          ...createCommmetDto,
-          authorIdx: userIdx,
+    const createdCommentResult = await this.prismaService.comment.create({
+      data: {
+        ...createCommmetDto,
+        authorIdx: userIdx,
+      },
+      select: {
+        idx: true,
+        authorIdx: true,
+        Post: {
+          select: {
+            idx: true,
+            authorIdx: true,
+          },
         },
-        select: {
-          idx: true,
-        },
-      })
-      .then((comment) => ({ idx: comment.idx }));
+      },
+    });
+
+    /**
+     * 만약 자신의 게시글에 댓글을 단게 아니라면 게시글 작성자에게 알림 전송
+     */
+    if (createdCommentResult.Post.authorIdx !== userIdx) {
+      this.logger.debug('createdCommentEvent 발행');
+
+      this.eventEmitter.emit(
+        'comment.created',
+        new CommentCreateEvent({
+          entityIdx: createdCommentResult.Post.idx,
+          receiverIdx: createdCommentResult.Post.authorIdx,
+          senderIdx: userIdx,
+          entityType: NotificationName.COMMENT,
+        }),
+      );
+    }
+
+    return {
+      idx: createdCommentResult.idx,
+    };
   }
 
   /**
@@ -81,6 +114,17 @@ export class CommentsService {
       },
       data: {
         ...updatecommentDto,
+      },
+    });
+  }
+
+  async getReplies(
+    commentIdx: IComment['idx'],
+  ): Promise<IComment.IReplyListOutPut> {
+    return this.prismaService.reply.findMany({
+      where: {
+        commentIdx,
+        deletedAt: null,
       },
     });
   }

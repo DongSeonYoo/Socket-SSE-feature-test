@@ -59,6 +59,7 @@ export class PostsController {
    * 게시글 수정
    */
   @Put()
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     description: '게시글 수정 시 댓글을 단 사용자에게 알림을 보냅니다',
   })

@@ -9,4 +9,13 @@ export interface IReply extends BaseTableOption {
   content: string;
 }
 
-export namespace IReply {}
+export namespace IReply {
+  export interface ICreateReplyInput
+    extends Pick<IReply, 'commentIdx' | 'content'> {}
+
+  export interface IDetailReplyOutPut
+    extends Pick<
+      IReply,
+      'idx' | 'authorIdx' | 'commentIdx' | 'content' | 'createdAt' | 'updatedAt'
+    > {}
+}
