@@ -1,0 +1,156 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.post-list,
+.post-detail {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+#postList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.post-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.post-item:hover {
+  background-color: #f5f5f5;
+}
+
+.post-idx {
+  flex: 0 0 50px;
+}
+
+.post-title {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.post-author,
+.post-date {
+  flex: 0 0 150px;
+}
+
+#commentForm {
+  margin-top: 20px;
+}
+
+#commentInput {
+  width: 70%;
+  padding: 5px;
+}
+
+.notification-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 400px; /* 고정 너비 */
+  height: 500px; /* 고정 높이 */
+  border-radius: 8px;
+  overflow-y: auto; /* 내용이 많으면 스크롤 생기게 */
+  position: relative; /* 버튼 위치 조정을 위해 */
+}
+
+/* 페이지네이션 버튼 위치 조정 */
+.modal-content button {
+  position: absolute;
+  bottom: 20px;
+}
+
+.modal-content button:first-of-type {
+  left: 20px;
+}
+
+.modal-content button:last-of-type {
+  right: 20px;
+}
+
+/* 알림 리스트 높이 제한 */
+#notificationList {
+  max-height: 400px; /* 버튼 위의 공간 확보 */
+  overflow-y: auto;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#pagination button {
+  margin: 0 10px;
+}
+
+#notificationList li {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+#notificationList li span {
+  display: block;
+  margin-bottom: 5px;
+}

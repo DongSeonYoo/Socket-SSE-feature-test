@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시판 & 알림 테스트</title>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
+    <div class="notification-icon" id="notificationIcon">
+      🔔
+      <span class="notification-badge" id="notificationBadge">0</span>
+    </div>
+
+    <div class="modal" id="notificationModal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>알림</h2>
+        <ul id="notificationList"></ul>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="post-list">
+        <h2>게시글 목록</h2>
+        <div id="postList"></div>
+        <div id="pagination">
+          <span id="totalPosts"></span>
+          <button id="prevPage">이전</button>
+          <span id="currentPage">1</span> / <span id="totalPages">1</span>
+          <button id="nextPage">다음</button>
+        </div>
+      </div>
+      <div class="post-detail">
+        <h2>게시글 상세</h2>
+        <div id="postContent"></div>
+        <div id="commentSection">
+          <h3>댓글</h3>
+          <ul id="commentList"></ul>
+          <form id="commentForm">
+            <input
+              type="text"
+              id="commentInput"
+              placeholder="댓글을 입력하세요"
+            />
+            <button type="submit">댓글 작성</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script/index.js"></script>
+  </body>
+</html>
