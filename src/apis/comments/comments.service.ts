@@ -48,6 +48,13 @@ export class CommentsService {
       select: {
         idx: true,
         authorIdx: true,
+        createdAt: true,
+        content: true,
+        User: {
+          select: {
+            name: true,
+          },
+        },
         Post: {
           select: {
             idx: true,
@@ -70,6 +77,9 @@ export class CommentsService {
           receiverIdx: createdCommentResult.Post.authorIdx,
           senderIdx: userIdx,
           entityType: NotificationName.COMMENT,
+          createdAt: createdCommentResult.createdAt,
+          authorName: createdCommentResult.User.name,
+          content: createdCommentResult.content,
         }),
       );
     }

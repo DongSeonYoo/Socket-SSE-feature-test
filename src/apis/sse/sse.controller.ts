@@ -4,6 +4,7 @@ import { LoginAuth } from 'src/decorators/jwt-auth.decorator';
 import { LoginUser } from 'src/decorators/login-user.decorator';
 import { IAuth } from '../auth/interfaces/auth.interface';
 import { SseService } from './sse.service';
+import { Subject } from 'rxjs';
 
 @ApiTags('SSE')
 @LoginAuth()
@@ -12,7 +13,7 @@ export class SseController {
   constructor(private readonly sseService: SseService) {}
 
   @Sse('subscribe')
-  subscribe(@LoginUser() user: IAuth.IJwtPayload) {
+  subscribe(@LoginUser() user: IAuth.IJwtPayload): Subject<MessageEvent> {
     return this.sseService.subscribe(user.idx);
   }
 }

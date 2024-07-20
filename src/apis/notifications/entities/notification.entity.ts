@@ -17,6 +17,7 @@ export namespace INotification {
     receiverIdx: IUser['idx'];
     entityType: NotificationName;
     entityIdx: number;
+    createdAt: Date;
   }
 
   export interface IGetNotificationListOutPut
@@ -27,6 +28,7 @@ export namespace INotification {
       | 'entityType'
       | 'readedAt'
       | 'senderIdx'
+      | 'receiverIdx'
       | 'updatedAt'
       | 'createdAt'
     > {}

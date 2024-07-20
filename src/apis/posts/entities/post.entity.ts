@@ -16,4 +16,8 @@ export namespace IPost {
       IPost,
       'idx' | 'authorIdx' | 'title' | 'content' | 'createdAt'
     > {}
+
+  export interface IPostListOutput extends Omit<IDetialPostOutput, 'content'> {
+    authorName: IUser['name'];
+  }
 }

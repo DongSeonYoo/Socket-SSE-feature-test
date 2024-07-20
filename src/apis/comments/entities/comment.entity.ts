@@ -18,7 +18,10 @@ export namespace IComment {
   export interface IReplyListOutPut extends Array<IReply.IDetailReplyOutPut> {}
 
   export namespace IEvent {
-    export interface OnCreate extends INotification.ICreateNotificationInput {}
+    export interface OnCreate extends INotification.ICreateNotificationInput {
+      content: IComment['content'];
+      authorName: IUser['name'];
+    }
 
     export interface OnUpdate extends INotification.ICreateNotificationInput {
       content: IComment['content'];

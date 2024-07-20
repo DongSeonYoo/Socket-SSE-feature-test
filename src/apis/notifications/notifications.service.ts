@@ -3,9 +3,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { CommentCreateEvent } from './events/comment.event';
 import { SseService } from '../sse/sse.service';
-import { NotificationName } from '@prisma/client';
 import { IUser } from '../users/entities/user.entity';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
+import { NotificationCountResponseDto } from './dto/notification-count.dto';
+import { NotificationResponseDto } from './dto/notification-list.dto';
 
 @Injectable()
 export class NotificationsService {
@@ -15,18 +16,57 @@ export class NotificationsService {
     private readonly sseService: SseService,
   ) {}
 
+  /**
+   * 알림 개수 조회
+   *
+   * @param userIdx: IUser['idx'] - 알림을 받을 유저의 idx
+   *
+   * @returns 알림 개수
+   */
+  async getNotificationCount(
+    userIdx: IUser['idx'],
+  ): Promise<NotificationCountResponseDto> {
+    return this.prismaService.notification
+      .count({
+        where: {
+          receiverIdx: userIdx,
+          deletedAt: null,
+        },
+      })
+      .then((res) => {
+        return {
+          count: res,
+        };
+      });
+  }
+
   async getAllNotification(
     pageNate: PagenationRequestDto,
     userIdx: IUser['idx'],
-  ) {
-    return this.prismaService.notification.findMany({
-      where: {
-        receiverIdx: userIdx,
-        deletedAt: null,
-      },
-      skip: pageNate.getOffset(),
-      take: 10,
-    });
+  ): Promise<NotificationResponseDto[]> {
+    const notificationListResult =
+      await this.prismaService.notification.findMany({
+        where: {
+          receiverIdx: userIdx,
+          deletedAt: null,
+        },
+        skip: pageNate.getOffset(),
+        take: 10,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+    return notificationListResult.map((notification) => ({
+      idx: notification.idx,
+      entityType: notification.entityType,
+      entityIdx: notification.idx,
+      readedAt: notification.readedAt,
+      senderIdx: notification.senderIdx,
+      receiverIdx: notification.receiverIdx,
+      createdAt: notification.createdAt,
+      updatedAt: notification.updatedAt,
+    }));
   }
 
   /**
@@ -48,18 +88,17 @@ export class NotificationsService {
 
     await this.prismaService.notification.create({
       data: {
-        ...eventInfo,
+        senderIdx: eventInfo.senderIdx,
+        receiverIdx: eventInfo.receiverIdx,
+        entityType: eventInfo.entityType,
+        entityIdx: eventInfo.entityIdx,
+        createdAt: eventInfo.createdAt,
       },
       select: {
         idx: true,
       },
     });
 
-    this.sseService.sendNotification(eventInfo.receiverIdx, {
-      entityIdx: eventInfo.entityIdx,
-      entityType: NotificationName.COMMENT,
-      senderIdx: eventInfo.senderIdx,
-      receiverIdx: eventInfo.receiverIdx,
-    });
+    this.sseService.sendNotification(eventInfo.receiverIdx, eventInfo);
   }
 }

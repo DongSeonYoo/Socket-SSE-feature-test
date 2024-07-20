@@ -11,11 +11,50 @@ import { IUser } from '../users/entities/user.entity';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { IAuth } from '../auth/interfaces/auth.interface';
 import { UsersService } from '../users/users.service';
+import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
+import { PostCountResponseDto } from './dto/post-count.dto';
 
 @Injectable()
 export class PostsService {
   private readonly logger: LoggerService = new Logger(UsersService.name);
   constructor(private readonly prismaService: PrismaService) {}
+
+  async getPostsCount(): Promise<PostCountResponseDto> {
+    return this.prismaService.post
+      .count({
+        where: {
+          deletedAt: null,
+        },
+      })
+      .then((res) => {
+        return {
+          count: res,
+        };
+      });
+  }
+
+  async getPosts(
+    pageNate: PagenationRequestDto,
+  ): Promise<IPost.IPostListOutput[]> {
+    const postsResult = await this.prismaService.post.findMany({
+      include: {
+        User: true,
+      },
+      where: {
+        deletedAt: null,
+      },
+      skip: pageNate.getOffset(),
+      take: pageNate.limit,
+    });
+
+    return postsResult.map((post) => ({
+      idx: post.idx,
+      title: post.title,
+      authorIdx: post.authorIdx,
+      authorName: post.User.name,
+      createdAt: post.createdAt,
+    }));
+  }
 
   async createPost(
     createPostDto: CreatePostDto,

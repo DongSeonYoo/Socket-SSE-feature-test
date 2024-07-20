@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,12 +20,33 @@ import { ApiSuccess } from 'src/decorators/api-success.decorator';
 import { DetailPostResponseDto } from './dto/detial-post.dto';
 import { ApiException } from 'src/decorators/api-exception.decorator';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostListResponseDto } from './dto/post-list.dto';
+import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
+import { PostCountResponseDto } from './dto/post-count.dto';
 
 @ApiTags('Posts')
 @LoginAuth()
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
+
+  /**
+   * 게시글 총 개수 조회
+   */
+  @Get('count')
+  @ApiSuccess(PostCountResponseDto)
+  getPostsCount() {
+    return this.postsService.getPostsCount();
+  }
+
+  /**
+   * 게시글 리스트 조회
+   */
+  @Get()
+  @ApiSuccess(PostListResponseDto)
+  getPosts(@Query() pageNate: PagenationRequestDto) {
+    return this.postsService.getPosts(pageNate);
+  }
 
   /**
    * 게시글 작성
