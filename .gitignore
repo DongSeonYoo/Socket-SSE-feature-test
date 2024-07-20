@@ -6,6 +6,10 @@
 
 sql.sql
 
+erd2.erd.json
+sql2.sql
+erd.vuerd.json
+
 # Logs
 logs
 *.log
