@@ -57,24 +57,25 @@ body {
   width: 70%;
   padding: 5px;
 }
-
 .notification-icon {
   position: fixed;
   top: 20px;
   right: 20px;
-  font-size: 24px;
+  font-size: 60px; /* 아이콘 크기 키움 */
   cursor: pointer;
+  z-index: 1000; /* 다른 요소 위에 보이게 */
 }
 
 .notification-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -10px;
+  right: -10px;
   background-color: red;
   color: white;
   border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 12px;
+  padding: 5px 10px; /* 패딩 늘림 */
+  font-size: 30px; /* 글자 크기 키움 */
+  font-weight: bold; /* 글자 굵게 */
 }
 
 .modal {
