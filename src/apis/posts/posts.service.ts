@@ -13,11 +13,17 @@ import { IAuth } from '../auth/interfaces/auth.interface';
 import { UsersService } from '../users/users.service';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
 import { PostCountResponseDto } from './dto/post-count.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PostUpdatedEvent } from '../notifications/events/post.event';
+import { NotificationName } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
   private readonly logger: LoggerService = new Logger(UsersService.name);
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async getPostsCount(): Promise<PostCountResponseDto> {
     return this.prismaService.post
@@ -98,7 +104,7 @@ export class PostsService {
       this.checkOwnPost(updatePostDto.idx, user.idx),
     ]);
 
-    await this.prismaService.post.update({
+    const updatePostResult = await this.prismaService.post.update({
       where: {
         idx: updatePostDto.idx,
         authorIdx: user.idx,
@@ -106,6 +112,25 @@ export class PostsService {
       data: {
         ...updatePostDto,
       },
+      select: {
+        Comment: {
+          distinct: 'authorIdx',
+        },
+      },
+    });
+
+    updatePostResult.Comment.map((comment) => {
+      this.eventEmitter.emitAsync(
+        PostUpdatedEvent.eventName,
+        new PostUpdatedEvent(
+          user.idx,
+          new Date(),
+          updatePostDto.idx,
+          NotificationName.POST,
+          comment.authorIdx,
+          updatePostDto.content,
+        ),
+      );
     });
   }
 

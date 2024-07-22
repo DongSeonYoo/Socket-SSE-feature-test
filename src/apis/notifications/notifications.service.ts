@@ -7,6 +7,7 @@ import { IUser } from '../users/entities/user.entity';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
 import { NotificationCountResponseDto } from './dto/notification-count.dto';
 import { NotificationResponseDto } from './dto/notification-list.dto';
+import { PostUpdatedEvent } from './events/post.event';
 
 @Injectable()
 export class NotificationsService {
@@ -70,7 +71,7 @@ export class NotificationsService {
   }
 
   /**
-   * 알림 생성 & SSE 전송
+   * 댓글 생성 알림 생성 & SSE 전송
    *
    * @param data: CommentCreateEvent - 알림 생성에 필요한 정보
    *
@@ -84,6 +85,27 @@ export class NotificationsService {
   @OnEvent(CommentCreatedEvent.eventName)
   async handleCreateCommentEvent(data: CommentCreatedEvent) {
     this.logger.debug(`comment.created이벤트 catch`);
+
+    await this.prismaService.notification.create({
+      data: {
+        entityType: data.entityType,
+        entityIdx: data.entityIdx,
+        receiverIdx: data.receiverIdx,
+        senderIdx: data.senderIdx,
+      },
+    });
+
+    this.sseService.sendNotification(data.receiverIdx, data);
+  }
+
+  /**
+   * 게시글 수정 알림 생성 & SSE 전송
+   *
+   * @param data: PostUpdateEvent - 알림 생성에 필요한 정보
+   */
+  @OnEvent(PostUpdatedEvent.eventName)
+  async handleUpdatedPostEvent(data: PostUpdatedEvent) {
+    this.logger.debug(`post.updated 이벤트 catch`);
 
     await this.prismaService.notification.create({
       data: {

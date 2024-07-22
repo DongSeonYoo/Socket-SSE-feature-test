@@ -22,9 +22,5 @@ export namespace IComment {
       content: IComment['content'];
       authorName: IUser['name'];
     }
-
-    export interface OnUpdate extends INotification.ICreateNotificationInput {
-      content: IComment['content'];
-    }
   }
 }

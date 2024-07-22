@@ -22,6 +22,9 @@ export class SseService {
       client.next({
         data,
       } as MessageEvent);
+    } else {
+      console.log('클라가 없어서 씹혔습니다');
     }
+    console.log(data);
   }
 }

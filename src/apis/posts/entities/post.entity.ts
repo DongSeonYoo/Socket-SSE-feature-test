@@ -30,4 +30,11 @@ export namespace IPost {
     > {
     authorName: IUser['name'];
   }
+
+  export namespace IEvent {
+    export interface OnUpdatePost
+      extends INotification.ICreateNotificationInput {
+      content: IPost['content'];
+    }
+  }
 }
