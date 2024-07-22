@@ -11,9 +11,13 @@ export class LoggerMiddleware implements NestMiddleware {
     const datetime = new Date();
     res.on('finish', () => {
       const { statusCode } = res;
-      this.logger.debug(
-        `${datetime}-${method} ${originalUrl} ${statusCode} ${ip} ${userAgent}`,
-      );
+      const logMessage = `${datetime}-${method} ${originalUrl} ${statusCode} ${ip} ${userAgent}`;
+
+      if (statusCode >= 400) {
+        this.logger.error(logMessage);
+      } else {
+        this.logger.debug(logMessage);
+      }
     });
 
     return next();
