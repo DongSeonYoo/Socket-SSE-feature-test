@@ -75,8 +75,8 @@ async function loadPostDetail(postId) {
   try {
     const response = await fetch(`/api/posts/${postId}`);
     if (!response.ok) throw new Error('게시글 상세 로딩 실패');
-    const post = await response.json();
-    displayPostDetail(post);
+    const { data } = await response.json();
+    displayPostDetail(data);
     loadComments(postId);
   } catch (error) {
     console.error('에러:', error);
@@ -93,10 +93,10 @@ function displayPostDetail(post) {
 
 async function loadComments(postId) {
   try {
-    const response = await fetch(`/api/posts/${postId}/comments`);
+    const response = await fetch(`/api/comments/${postId}`);
     if (!response.ok) throw new Error('댓글 로딩 실패');
-    const comments = await response.json();
-    displayComments(comments);
+    const { data } = await response.json();
+    displayComments(data);
   } catch (error) {
     console.error('에러:', error);
     commentList.innerHTML = '<li>댓글 로딩 실패</li>';
@@ -107,7 +107,11 @@ function displayComments(comments) {
   commentList.innerHTML = comments
     .map(
       (comment) => `
-        <li>${comment.content}</li>
+        <li>
+            <span>작성자: ${comment.authorName}</span>
+            <span>내용: ${comment.content}</span>
+            <span>생성일: ${new Date(comment.createdAt).toLocaleString()}</span>
+        </li>
     `,
     )
     .join('');

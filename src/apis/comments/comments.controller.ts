@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Sse,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
@@ -23,6 +24,8 @@ import { ApiException } from 'src/decorators/api-exception.decorator';
 import { LoginAuth } from 'src/decorators/jwt-auth.decorator';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { IComment } from './entities/comment.entity';
+import { CommentListResponseDto } from './dto/comment-list.dto';
+import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
 
 @ApiTags('Comments')
 @LoginAuth()
@@ -31,10 +34,17 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   /**
-   * 댓글 정보 조회
+   * 게시글의 댓글 리스트 조회
    */
-  @Get(':commentIdx')
-  getComments() {}
+  @Get(':postIdx')
+  @ApiSuccess([CommentListResponseDto])
+  @ApiException(HttpStatus.NOT_FOUND, '해당하는 게시글이 존재하지 않습니다.')
+  getComments(
+    @Param('postIdx') postIdx: number,
+    @Query() pageNate: PagenationRequestDto,
+  ) {
+    return this.commentsService.getComments(postIdx, pageNate);
+  }
 
   /**
    * 댓글 작성

@@ -10,6 +10,9 @@ import { IComment } from './entities/comment.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CommentCreateEvent } from '../notifications/events/comment.event';
 import { NotificationName } from '@prisma/client';
+import { IPost } from '../posts/entities/post.entity';
+import { CommentListResponseDto } from './dto/comment-list.dto';
+import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
 
 @Injectable()
 export class CommentsService {
@@ -19,6 +22,32 @@ export class CommentsService {
     private readonly prismaService: PrismaService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  async getComments(
+    postIdx: IPost['idx'],
+    pageNate: PagenationRequestDto,
+  ): Promise<CommentListResponseDto[]> {
+    const commentListResult = await this.prismaService.comment.findMany({
+      include: {
+        User: true,
+      },
+      where: {
+        postIdx: postIdx,
+        deletedAt: null,
+      },
+      skip: pageNate.getOffset(),
+      take: pageNate.limit,
+    });
+
+    return commentListResult.map((comment) => ({
+      authorIdx: comment.authorIdx,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      idx: comment.idx,
+      authorName: comment.User.name,
+      updatedAt: comment.updatedAt,
+    }));
+  }
 
   /**
    * 댓글 생성 프로세스
@@ -71,7 +100,7 @@ export class CommentsService {
       this.logger.debug('createdCommentEvent 발행');
 
       this.eventEmitter.emit(
-        'comment.created',
+        CommentCreateEvent.eventName,
         new CommentCreateEvent({
           entityIdx: createdCommentResult.Post.idx,
           receiverIdx: createdCommentResult.Post.authorIdx,

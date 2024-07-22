@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   LoggerService,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -95,6 +96,9 @@ export class UsersService {
         },
       })
       .then((result) => {
+        if (!result) {
+          throw new NotFoundException('해당하는 유저가 존재하지 않습니다.');
+        }
         return {
           idx: result.idx,
           email: result.email,

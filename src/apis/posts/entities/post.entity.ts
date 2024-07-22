@@ -1,3 +1,5 @@
+import { IComment } from 'src/apis/comments/entities/comment.entity';
+import { INotification } from 'src/apis/notifications/entities/notification.entity';
 import { IUser } from 'src/apis/users/entities/user.entity';
 import { BaseTableOption } from 'src/utils/base-table.util';
 
@@ -18,6 +20,14 @@ export namespace IPost {
     > {}
 
   export interface IPostListOutput extends Omit<IDetialPostOutput, 'content'> {
+    authorName: IUser['name'];
+  }
+
+  export interface ICommentListOutput
+    extends Pick<
+      IComment,
+      'idx' | 'content' | 'createdAt' | 'updatedAt' | 'authorIdx'
+    > {
     authorName: IUser['name'];
   }
 }

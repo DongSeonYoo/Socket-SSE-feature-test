@@ -23,6 +23,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostListResponseDto } from './dto/post-list.dto';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
 import { PostCountResponseDto } from './dto/post-count.dto';
+import { CommentListResponseDto } from '../comments/dto/comment-list.dto';
 
 @ApiTags('Posts')
 @LoginAuth()
@@ -70,12 +71,6 @@ export class PostsController {
   getPost(@Param('postIdx') postIdx: number) {
     return this.postsService.getPost(postIdx);
   }
-
-  /**
-   * 게시글의 댓글 리스트 조회
-   */
-  @Get(':postIdx/comments')
-  getComments() {}
 
   /**
    * 게시글 수정
