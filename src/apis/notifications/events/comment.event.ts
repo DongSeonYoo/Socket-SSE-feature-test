@@ -1,7 +1,8 @@
 import { NotificationName } from '@prisma/client';
-import { CreateNotificationDto } from '../dto/create-notification.dto';
+import { IComment } from 'src/apis/comments/entities/comment.entity';
+import { IUser } from 'src/apis/users/entities/user.entity';
 
-export class CommentCreatedEvent implements CreateNotificationDto {
+export class CommentCreatedEvent implements IComment.IEvent.OnCreate {
   static readonly eventName = 'comment.created';
 
   constructor(
@@ -10,7 +11,7 @@ export class CommentCreatedEvent implements CreateNotificationDto {
     readonly entityIdx: number,
     readonly entityType: NotificationName,
     readonly receiverIdx: number,
+    readonly content: IComment['content'],
+    readonly authorName: IUser['name'],
   ) {}
 }
-
-// export class CommentUpdateEvent {}

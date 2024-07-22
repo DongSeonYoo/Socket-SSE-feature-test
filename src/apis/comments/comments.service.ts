@@ -102,13 +102,13 @@ export class CommentsService {
       this.eventEmitter.emit(
         CommentCreatedEvent.eventName,
         new CommentCreatedEvent(
-          createdCommentResult.User.name,
-          createdCommentResult.content,
+          userIdx,
           createdCommentResult.createdAt,
-          createdCommentResult.Post.idx,
+          createdCommentResult.idx,
           NotificationName.COMMENT,
           createdCommentResult.Post.authorIdx,
-          userIdx,
+          createdCommentResult.content,
+          createdCommentResult.User.name,
         ),
       );
     }
