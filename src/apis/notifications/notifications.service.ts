@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CommentCreatedEvent2 } from './events/comment.event';
+import { CommentCreatedEvent } from './events/comment.event';
 import { SseService } from '../sse/sse.service';
 import { IUser } from '../users/entities/user.entity';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
@@ -81,8 +81,8 @@ export class NotificationsService {
    *
    * @returns 생성된 알림의 idx
    */
-  @OnEvent(CommentCreatedEvent2.eventName)
-  async handleCreateCommentEvent(data: CommentCreatedEvent2) {
+  @OnEvent(CommentCreatedEvent.eventName)
+  async handleCreateCommentEvent(data: CommentCreatedEvent) {
     this.logger.debug(`comment.created이벤트 catch`);
 
     await this.prismaService.notification.create({

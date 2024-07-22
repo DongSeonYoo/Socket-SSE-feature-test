@@ -12,7 +12,7 @@ import { NotificationName } from '@prisma/client';
 import { IPost } from '../posts/entities/post.entity';
 import { CommentListResponseDto } from './dto/comment-list.dto';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
-import { CommentCreatedEvent2 } from '../notifications/events/comment.event';
+import { CommentCreatedEvent } from '../notifications/events/comment.event';
 
 @Injectable()
 export class CommentsService {
@@ -100,8 +100,8 @@ export class CommentsService {
       this.logger.debug('createdCommentEvent 발행');
 
       this.eventEmitter.emit(
-        CommentCreatedEvent2.eventName,
-        new CommentCreatedEvent2(
+        CommentCreatedEvent.eventName,
+        new CommentCreatedEvent(
           createdCommentResult.User.name,
           createdCommentResult.content,
           createdCommentResult.createdAt,
