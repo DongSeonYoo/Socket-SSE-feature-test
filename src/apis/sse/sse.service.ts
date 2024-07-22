@@ -1,8 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Subject } from 'rxjs';
 import { IUser } from '../users/entities/user.entity';
-import { CommentCreateEvent } from '../notifications/events/comment.event';
-import { IComment } from '../comments/entities/comment.entity';
+import { CreateNotificationDto } from '../notifications/dto/create-notification.dto';
 
 @Injectable()
 export class SseService {
@@ -17,11 +16,9 @@ export class SseService {
     return this.clients.get(userIdx);
   }
 
-  sendNotification(userIdx: IUser['idx'], data: IComment.IEvent.OnCreate) {
+  sendNotification(userIdx: IUser['idx'], data: CreateNotificationDto) {
     const client = this.clients.get(userIdx);
-
     if (client) {
-      console.log(data);
       client.next({
         data,
       } as MessageEvent);

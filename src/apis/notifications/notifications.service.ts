@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CommentCreateEvent } from './events/comment.event';
+import { CommentCreatedEvent2 } from './events/comment.event';
 import { SseService } from '../sse/sse.service';
 import { IUser } from '../users/entities/user.entity';
 import { PagenationRequestDto } from 'src/dtos/pagenate.dto';
@@ -70,9 +70,9 @@ export class NotificationsService {
   }
 
   /**
-   * 알림 생성
+   * 알림 생성 & SSE 전송
    *
-   * @param event: CommentCreateEvent - 알림 생성에 필요한 정보
+   * @param data: CommentCreateEvent - 알림 생성에 필요한 정보
    *
    * issuerIdx: 알림을 발생시킨 유저의 idx
    * subscriberIdx: 알림을 받을 유저의 idx
@@ -81,24 +81,19 @@ export class NotificationsService {
    *
    * @returns 생성된 알림의 idx
    */
-  @OnEvent('comment.created')
-  async handleCreateCommented(event: CommentCreateEvent) {
-    this.logger.debug('comment.created 이벤트 catch');
-    const { eventInfo } = event;
+  @OnEvent(CommentCreatedEvent2.eventName)
+  async handleCreateCommentEvent(data: CommentCreatedEvent2) {
+    this.logger.debug(`comment.created이벤트 catch`);
 
     await this.prismaService.notification.create({
       data: {
-        senderIdx: eventInfo.senderIdx,
-        receiverIdx: eventInfo.receiverIdx,
-        entityType: eventInfo.entityType,
-        entityIdx: eventInfo.entityIdx,
-        createdAt: eventInfo.createdAt,
-      },
-      select: {
-        idx: true,
+        entityType: data.entityType,
+        entityIdx: data.entityIdx,
+        receiverIdx: data.receiverIdx,
+        senderIdx: data.senderIdx,
       },
     });
 
-    this.sseService.sendNotification(eventInfo.receiverIdx, eventInfo);
+    this.sseService.sendNotification(data.receiverIdx, data);
   }
 }
