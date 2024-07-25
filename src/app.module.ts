@@ -25,6 +25,7 @@ import { RepliesModule } from './apis/replies/replies.module';
 import Joi from 'joi';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SseModule } from './apis/sse/sse.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { SseModule } from './apis/sse/sse.module';
     AuthModule,
     RepliesModule,
     SseModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
